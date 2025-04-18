@@ -11,33 +11,26 @@ import Cart from "./components/Cart";
 import Footer from "./components/Footer";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import type { Product as ProductType } from "./types/Product";
 
-// Define the Product type
-interface Product {
-  id: number;
-  title: string;
-  price: number;
-  image: string;
-  quantity: number;
-  // Add other properties that might be used
-}
 
 const cartFromLocalStorage = JSON.parse(
   localStorage.getItem("cart") || "[]"
-) as Product[];
+) as ProductType[];
 
 function App() {
-  const [cart, setCart] = useState<Product[]>(cartFromLocalStorage);
+  const [cart, setCart] = useState<ProductType[]>(cartFromLocalStorage);
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product: ProductType) => {
     const newCart = [...cart];
     let itemInCart = newCart.find((item) => product.id === item.id);
     if (itemInCart) {
-      itemInCart.quantity++;
+      // Make sure quantity exists and is a number
+      itemInCart.quantity = (itemInCart.quantity || 0) + 1;
     } else {
       itemInCart = { ...product, quantity: 1 };
       newCart.push(itemInCart);
@@ -45,12 +38,12 @@ function App() {
     setCart(newCart);
   };
 
-  const removeFromCart = (productToRemove: Product) => {
+  const removeFromCart = (productToRemove: ProductType) => {
     // console.log("productToRemove", productToRemove)
     setCart(cart.filter((product2) => product2 !== productToRemove));
   };
 
-  const removeOneFromCart = (product: Product) => {
+  const removeOneFromCart = (product: ProductType) => {
     const newCart = [...cart];
     const itemInCart = newCart.find((item) => product.id === item.id);
     // console.log("itemInCart", itemInCart)
@@ -59,7 +52,8 @@ function App() {
       if (itemInCart.quantity === 1) {
         return removeFromCart(product);
       }
-      itemInCart.quantity--;
+      // Make sure quantity exists and is a number
+      itemInCart.quantity = (itemInCart.quantity || 0) - 1;
     }
     setCart(newCart);
   };
@@ -69,7 +63,7 @@ function App() {
   };
 
   const getCartTotal = () => {
-    return cart.reduce((sum, { quantity }) => sum + quantity, 0);
+    return cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
   };
 
   return (

@@ -1,15 +1,19 @@
 import ReviewStars from "./ReviewStars";
 
+interface ReviewEntry {
+  rating: number;
+  title: string;
+  description: string;
+  reviewer: string;
+}
+
+interface ReviewData {
+  entries: ReviewEntry[];
+}
+
 interface ReviewsProps {
   product: number;
-  rData: {
-    entries: Array<{
-      rating: number;
-      title: string;
-      description: string;
-      reviewer: string;
-    }>;
-  };
+  rData: ReviewData;
 }
 
 function Reviews(props: ReviewsProps) {
@@ -33,7 +37,6 @@ function Reviews(props: ReviewsProps) {
     }
   }
   return (
-    // console.log(props.rData)
     <section>
       <div className="tw-mx-auto tw-max-w-screen-xl tw-px-4 tw-py-8 tw-sm:px-6 tw-lg:px-8">
         <h2 className="tw-text-xl tw-font-bold tw-sm:text-2xl">
@@ -42,7 +45,6 @@ function Reviews(props: ReviewsProps) {
 
         <div className="tw-mt-4 tw-flex tw-items-center tw-gap-4">
           <p className="tw-text-3xl tw-font-medium">
-            {/* 3.8 */}
             {props?.product}
             <span className="tw-sr-only"> Average review score </span>
           </p>

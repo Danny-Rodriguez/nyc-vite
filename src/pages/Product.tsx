@@ -5,37 +5,47 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Reviews from "../components/Reviews";
 import reviewsData from "../data/reviews.json";
+import type { Product } from "../types/Product";
 
-function Product({ addToCart }) {
+// Define the props interface for the Product component
+interface ProductProps {
+  addToCart: (product: Product) => void;
+  cart?: Product[];
+}
+
+function Product({ addToCart }: ProductProps) {
   const { id } = useParams();
-  const [product, setProduct] = useState([]);
+  const [product, setProduct] = useState<Product>({} as Product);
   const [loading, setLoading] = useState(false);
-  let reviewData;
+  let reviewData: any;
 
   useEffect(() => {
     const getProduct = async () => {
       setLoading(true);
-      let products;
-      let productData;
-      await fetch("/products.json")
-        .then((res) => res.json())
-        .then((data) => (products = data));
-
-      for (let i = 0; i < products.length; i++) {
-        if (products[i].id === parseInt(id)) {
-          productData = products[i];
+      let products: Product[] = [];
+      let productData: Product | undefined;
+      
+      try {
+        const response = await fetch("/products.json");
+        products = await response.json();
+        
+        // Find the product with matching id
+        if (id) {
+          productData = products.find(p => p.id === parseInt(id));
         }
+      } catch (error) {
+        console.error("Error fetching product data:", error);
       }
-      setProduct(productData);
+      // Only set the product if productData is defined, otherwise use an empty product object
+      setProduct(productData || {} as Product);
       setLoading(false);
     };
     getProduct();
   }, [id]);
 
-  for (let i = 0; i < reviewsData.length; i++) {
-    if (reviewsData[i].id === parseInt(id)) {
-      reviewData = reviewsData[i];
-    }
+  // Find matching review data
+  if (id) {
+    reviewData = reviewsData.find(review => review.id === parseInt(id));
   }
 
   console.log("reviewData", reviewData);
@@ -89,7 +99,7 @@ function Product({ addToCart }) {
             Go to Cart
           </NavLink>
         </div>
-        <Reviews product={product?.rating?.rate} rData={reviewData} />
+        <Reviews product={product?.rating?.rate || 0} rData={reviewData} />
       </>
     );
   };

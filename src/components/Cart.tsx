@@ -1,17 +1,5 @@
-// import { useSelector } from "react-redux"
-// import Product from "../pages/Product"
+import type { Product } from "../types/Product";
 
-// Define the Product type
-interface Product {
-  id: number;
-  title: string;
-  price: number;
-  image: string;
-  quantity: number;
-  // Add other properties that might be used
-}
-
-// Define the props interface for the Cart component
 interface CartProps {
   cart: Product[];
   addToCart: (product: Product) => void;
@@ -29,8 +17,6 @@ function Cart({
   removeOneFromCart,
   getCartTotal,
 }: CartProps) {
-  // console.log(cart)
-
   const checkout = async () => {
     try {
       const response = await fetch("http://localhost:3000/checkout", {
@@ -57,9 +43,8 @@ function Cart({
 
   const getTotalSum = () => {
     return cart
-      .reduce((sum, { price, quantity }) => sum + price * quantity, 0)
+      .reduce((sum, { price, quantity }) => sum + price * (quantity || 0), 0)
       ?.toFixed(2);
-    // console.log("cart length", cart.length)
   };
 
   return (

@@ -1,5 +1,4 @@
 import { NavLink } from "react-router-dom";
-// import { useSelector } from "react-redux"
 
 // Define the props interface for the Navbar component
 interface NavbarProps {
@@ -7,7 +6,6 @@ interface NavbarProps {
 }
 
 function Navbar({ getCartTotal }: NavbarProps) {
-  // const state = useSelector(state => state.handleCart)
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-light bg-white py-3 shadow-sm">
