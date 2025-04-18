@@ -11,6 +11,7 @@ import Cart from "./components/Cart";
 import Footer from "./components/Footer";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import NotFound from "./pages/404";
 import type { Product as ProductType } from "./types/Product";
 
 
@@ -94,6 +95,8 @@ function App() {
           />
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
+          {/* This is the catch-all route for 404 pages */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Footer />
