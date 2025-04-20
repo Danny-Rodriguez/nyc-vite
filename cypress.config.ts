@@ -1,13 +1,28 @@
 import { defineConfig } from "cypress";
+import { addCucumberPreprocessorPlugin } from "@badeball/cypress-cucumber-preprocessor";
+import { createEsbuildPlugin } from "@badeball/cypress-cucumber-preprocessor/esbuild";
+import createBundler from "@bahmutov/cypress-esbuild-preprocessor";
 
 export default defineConfig({
   e2e: {
     baseUrl: "http://localhost:5173",
-    specPattern: "**/*.cy.ts",
-    setupNodeEvents(on, config) {
-      // implement node event listeners here if needed
+    specPattern: "**/*.feature",
+    async setupNodeEvents(
+      on: Cypress.PluginEvents,
+      config: Cypress.PluginConfigOptions
+    ): Promise<Cypress.PluginConfigOptions> {
+      // Implement Cucumber preprocessor
+      await addCucumberPreprocessorPlugin(on, config);
+      // Use esbuild to handle TypeScript
+      on(
+        "file:preprocessor",
+        createBundler({
+          plugins: [createEsbuildPlugin(config)],
+        })
+      );
+
       return config;
     },
-    experimentalStudio: true,
+    experimentalStudio: false,
   },
 });
