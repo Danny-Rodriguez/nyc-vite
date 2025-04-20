@@ -5,8 +5,9 @@ Feature: Shopping Cart Functionality
 
   Background:
     Given I am on the products page
-    When I add the first product to my cart
-    And I navigate to the cart page
+    When I click Buy Now on the first product
+    And I add the product to my cart
+    And I go to the cart page
 
   Scenario: Display added products in the cart
     Then the cart should contain at least one product
