@@ -4,7 +4,7 @@ Feature: Shopping Cart Functionality
   So that I can purchase the products I want
 
   Background:
-    Given I am on the products page
+    Given I am on the products page for cart testing
     When I click Buy Now on the first product
     And I add the product to my cart
     And I go to the cart page

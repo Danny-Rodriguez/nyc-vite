@@ -1,7 +1,7 @@
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
 
 // Background steps
-Given("I am on the products page", () => {
+Given("I am on the products page for cart testing", () => {
   cy.visit("/products");
 
   // Wait for products to load
