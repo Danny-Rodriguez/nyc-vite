@@ -24,20 +24,20 @@ function Product({ addToCart }: ProductProps) {
       setLoading(true);
       let products: Product[] = [];
       let productData: Product | undefined;
-      
+
       try {
         const response = await fetch("/products.json");
         products = await response.json();
-        
+
         // Find the product with matching id
         if (id) {
-          productData = products.find(p => p.id === parseInt(id));
+          productData = products.find((p) => p.id === parseInt(id));
         }
       } catch (error) {
         console.error("Error fetching product data:", error);
       }
       // Only set the product if productData is defined, otherwise use an empty product object
-      setProduct(productData || {} as Product);
+      setProduct(productData || ({} as Product));
       setLoading(false);
     };
     getProduct();
@@ -45,10 +45,8 @@ function Product({ addToCart }: ProductProps) {
 
   // Find matching review data
   if (id) {
-    reviewData = reviewsData.find(review => review.id === parseInt(id));
+    reviewData = reviewsData.find((review) => review.id === parseInt(id));
   }
-
-  console.log("reviewData", reviewData);
 
   const Loading = () => {
     return (

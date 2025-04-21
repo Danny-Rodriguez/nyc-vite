@@ -14,7 +14,6 @@ import Contact from "./pages/Contact";
 import NotFound from "./pages/404";
 import type { Product as ProductType } from "./types/Product";
 
-
 const cartFromLocalStorage = JSON.parse(
   localStorage.getItem("cart") || "[]"
 ) as ProductType[];
@@ -40,14 +39,12 @@ function App() {
   };
 
   const removeFromCart = (productToRemove: ProductType) => {
-    // console.log("productToRemove", productToRemove)
     setCart(cart.filter((product2) => product2 !== productToRemove));
   };
 
   const removeOneFromCart = (product: ProductType) => {
     const newCart = [...cart];
     const itemInCart = newCart.find((item) => product.id === item.id);
-    // console.log("itemInCart", itemInCart)
 
     if (itemInCart) {
       if (itemInCart.quantity === 1) {

@@ -23,7 +23,6 @@ function Reviews(props: ReviewsProps) {
     r3 = 3,
     r4 = 4,
     r5 = 5;
-  console.log("props.rData", props.rData.entries);
   const starArr: (number | string)[] = [r1, r2, r3, r4, r5];
   const ratingRounded = Math.round(props?.product);
 
@@ -100,7 +99,10 @@ function Reviews(props: ReviewsProps) {
         </div>
 
         {props?.rData?.entries.map((item, index) => (
-          <div key={`review-${item.reviewer}-${index}`} className="tw-mt-8 tw-grid tw-grid-cols-1 tw-gap-x-16 tw-gap-y-12 tw-lg:grid-cols-2">
+          <div
+            key={`review-${item.reviewer}-${index}`}
+            className="tw-mt-8 tw-grid tw-grid-cols-1 tw-gap-x-16 tw-gap-y-12 tw-lg:grid-cols-2"
+          >
             <blockquote>
               <header className="tw-sm:flex tw-sm:items-center tw-sm:gap-4">
                 <ReviewStars rating={item?.rating} />
