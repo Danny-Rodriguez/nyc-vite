@@ -99,8 +99,8 @@ function Reviews(props: ReviewsProps) {
           </div>
         </div>
 
-        {props?.rData?.entries.map((item) => (
-          <div className="tw-mt-8 tw-grid tw-grid-cols-1 tw-gap-x-16 tw-gap-y-12 tw-lg:grid-cols-2">
+        {props?.rData?.entries.map((item, index) => (
+          <div key={`review-${item.reviewer}-${index}`} className="tw-mt-8 tw-grid tw-grid-cols-1 tw-gap-x-16 tw-gap-y-12 tw-lg:grid-cols-2">
             <blockquote>
               <header className="tw-sm:flex tw-sm:items-center tw-sm:gap-4">
                 <ReviewStars rating={item?.rating} />
