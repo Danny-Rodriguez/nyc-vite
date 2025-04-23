@@ -1,54 +1,163 @@
-# React + TypeScript + Vite
+# NYC Vite - React + TypeScript + Vite with Cypress/Cucumber Testing
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Project Overview
 
-Currently, two official plugins are available:
+This project demonstrates a React application built with Vite and TypeScript, featuring comprehensive end-to-end testing using Cypress with Cucumber integration. It serves as a learning resource for teams looking to implement Behavior-Driven Development (BDD) testing practices.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Getting Started
 
-## Expanding the ESLint configuration
+```bash
+# Install dependencies
+npm install
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+# Start the development server
+npm run dev
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+# Run Cypress tests in interactive mode
+npm run cypress:open
+
+# Run Cypress tests headlessly
+npm run cypress:run
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Cypress/Cucumber Best Practices
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 1. Project Structure
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+We follow a well-organized structure for our Cypress/Cucumber implementation:
+
 ```
+cypress/
+  e2e/
+    features/           # Gherkin feature files
+      cart.feature
+      navbar_active_link.feature
+      product_detail.feature
+    step_definitions/   # Step implementation files
+      cart.ts
+      common.ts         # Reusable steps across features
+      navbar_active_link.ts
+      product_detail.ts
+  support/
+    commands.ts         # Custom Cypress commands
+    helpers.ts          # Helper functions
+    e2e.ts              # Configuration and global hooks
+  fixtures/
+    example.json        # Test data
+```
+
+### 2. Feature File Best Practices
+
+- **Use descriptive feature titles**: Each feature should clearly describe the functionality being tested
+- **Include user stories**: Start with "As a [role], I want [feature] so that [benefit]"
+- **Keep scenarios focused**: Each scenario should test one specific behavior
+- **Use Background for common steps**: Avoid repetition by using Background for setup steps
+- **Use Scenario Outline for data-driven tests**: Test multiple variations with Examples tables
+
+Example:
+```gherkin
+Feature: Shopping Cart Functionality
+  As a customer
+  I want to manage items in my shopping cart
+  So that I can purchase the products I want
+
+  Background:
+    Given I am on the products page
+    When I add a product to my cart
+
+  Scenario: Display added products in the cart
+    Then the cart should contain the product
+
+  Scenario Outline: Calculate correct price for different quantities
+    When I set the quantity to <quantity>
+    Then the total price should be <price>
+
+    Examples:
+      | quantity | price |
+      | 1        | 19.99 |
+      | 2        | 39.98 |
+```
+
+### 3. Step Definition Best Practices
+
+- **Keep steps reusable**: Write steps that can be reused across scenarios
+- **Use parameterization**: Leverage Cucumber's parameter passing for flexible steps
+- **Maintain single responsibility**: Each step should do one thing well
+- **Use descriptive step names**: Steps should clearly describe the action or assertion
+- **Organize by feature**: Group step definitions by feature or functional area
+- **Share common steps**: Use a common.ts file for steps used across multiple features
+
+Example:
+```typescript
+// In common.ts - reusable steps
+Given("I am on the products page", () => {
+  cy.visit("/products");
+  cy.getByDataCy("product-list").should("be.visible");
+});
+
+// In cart.ts - feature-specific steps
+When("I add a product to my cart", () => {
+  cy.getByDataCy("add-to-cart-button").first().click();
+  cy.getByDataCy("cart-count").should("not.have.text", "0");
+});
+```
+
+### 4. Configuration Best Practices
+
+#### cypress-cucumber-preprocessor.config.js
+
+Two main approaches for organizing step definitions:
+
+```javascript
+// Option 1: Global step definitions (recommended for smaller projects)
+export default {
+  nonGlobalStepDefinitions: false,
+  stepDefinitions: [
+    "cypress/e2e/step_definitions/**/*.{js,ts}",
+  ]
+}
+
+// Option 2: Feature-specific step definitions
+export default {
+  nonGlobalStepDefinitions: true,
+  stepDefinitions: [
+    "cypress/e2e/features/**/*.{js,ts}",
+    "cypress/e2e/features/**/*.feature",
+  ]
+}
+```
+
+### 5. Browser Compatibility
+
+For this project, we've found that using Edge browser instead of the default Electron browser provides better connectivity to the local development server at http://localhost:5173.
+
+### 6. Custom Commands and Selectors
+
+- **Use data-cy attributes**: Always use dedicated test attributes instead of CSS classes or IDs
+- **Create custom commands**: Encapsulate common test operations in custom commands
+
+Example:
+```typescript
+// In commands.ts
+Cypress.Commands.add("getByDataCy", (selector) => {
+  return cy.get(`[data-cy=${selector}]`);
+});
+
+// In tests
+cy.getByDataCy("product-card").should("have.length.at.least", 1);
+```
+
+### 7. Testing Best Practices
+
+- **Test user flows, not implementation**: Focus on user behaviors rather than implementation details
+- **Avoid flaky tests**: Use proper waiting and assertions to handle asynchronous operations
+- **Keep tests independent**: Each test should be able to run in isolation
+- **Use meaningful assertions**: Assertions should clearly indicate what's being tested
+- **Leverage Cypress's retry-ability**: Use assertions that automatically retry until they pass or timeout
+
+## Additional Resources
+
+- [Cypress Documentation](https://docs.cypress.io/)
+- [Cucumber Documentation](https://cucumber.io/docs/cucumber/)
+- [@badeball/cypress-cucumber-preprocessor](https://github.com/badeball/cypress-cucumber-preprocessor)
+

@@ -6,7 +6,7 @@ import createBundler from "@bahmutov/cypress-esbuild-preprocessor";
 export default defineConfig({
   e2e: {
     baseUrl: "http://localhost:5173",
-    specPattern: "**/*.feature",
+    specPattern: "cypress/e2e/features/**/*.feature",
     async setupNodeEvents(
       on: Cypress.PluginEvents,
       config: Cypress.PluginConfigOptions
