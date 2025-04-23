@@ -35,31 +35,31 @@ function Navbar({ getCartTotal }: NavbarProps) {
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
+            <ul className="navbar-nav mx-auto mb-2 mb-lg-0" data-cy="navbar-links">
               <li className="nav-item">
-                <NavLink className="nav-link" to="/">
+                <NavLink className="nav-link" to="/" data-cy="nav-link-home">
                   Home
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link" to="/products">
+                <NavLink className="nav-link" to="/products" data-cy="nav-link-products">
                   Products
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link" to="/about">
+                <NavLink className="nav-link" to="/about" data-cy="nav-link-about">
                   About
                 </NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link" to="/contact">
+                <NavLink className="nav-link" to="/contact" data-cy="nav-link-contact">
                   Contact
                 </NavLink>
               </li>
             </ul>
-            <div className="buttons">
-              <button className="btn ">
-                <NavLink to="/cart" className="btn btn-outline-dark ms-2">
+            <div className="buttons" data-cy="navbar-buttons">
+              <button className="btn">
+                <NavLink to="/cart" className="btn btn-outline-dark ms-2" data-cy="nav-link-cart">
                   <i className="fa fa-shopping-cart me-1"></i> Cart (
                   {getCartTotal()})
                 </NavLink>

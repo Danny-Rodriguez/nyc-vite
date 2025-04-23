@@ -14,22 +14,27 @@ When("I visit the {string} page", (path: string) => {
 });
 
 Then("the {string} link in the navbar should be highlighted", (label: string) => {
-  // Find the navbar link by its text and verify it has the active class
-  cy.contains(".nav-link", label)
+  // Find the navbar link by data-cy attribute and verify it has the active class
+  const navLinkId = `nav-link-${label.toLowerCase()}`;
+  cy.getByDataCy(navLinkId)
     .should("exist")
     .should("have.class", "active");
 });
 
 Then("other navbar links should not be highlighted", function() {
-  // Get the current page label from the active link
-  cy.get(".nav-link.active").invoke("text").then((activeLabel) => {
-    // All other links should NOT have the active class
-    pages
-      .filter((page) => page.label !== activeLabel.trim())
-      .forEach(({ label: otherLabel }) => {
-        cy.contains(".nav-link", otherLabel)
-          .should("exist")
-          .should("not.have.class", "active");
-      });
-  });
+  // First find the active link
+  cy.getByDataCy("navbar-links")
+    .find(".active")
+    .invoke("text")
+    .then((activeLabel) => {
+      // All other links should NOT have the active class
+      pages
+        .filter((page) => page.label !== activeLabel.trim())
+        .forEach(({ label: otherLabel }) => {
+          const navLinkId = `nav-link-${otherLabel.toLowerCase()}`;
+          cy.getByDataCy(navLinkId)
+            .should("exist")
+            .should("not.have.class", "active");
+        });
+    });
 });
