@@ -5,49 +5,51 @@ Given("I am on the products page for cart testing", () => {
   cy.visit("/products");
 
   // Wait for products to load
-  cy.contains("Latest Products").should("be.visible");
-  cy.get(".card").should("have.length.at.least", 1);
+  cy.getByDataCy("page-title")
+    .should("be.visible")
+    .and("contain", "Latest Products");
+  cy.getByDataCy("product-card").should("have.length.at.least", 1);
 });
 
 When("I click Buy Now on the first product", () => {
-  cy.get(".card")
+  cy.getByDataCy("product-card")
     .first()
     .within(() => {
-      cy.contains("Buy Now").click();
+      cy.getByDataCy("buy-now-button").click();
     });
   // Verify we're on the product details page
-  cy.get("h1").should("be.visible");
+  cy.getByDataCy("product-title").should("be.visible");
 });
 
 When("I add the product to my cart", () => {
   // Click the Add to Cart button on the product details page
-  cy.contains("Add to Cart").click();
+  cy.getByDataCy("add-to-cart-button").click();
 });
 
 When("I go to the cart page", () => {
   // Click the Go to Cart button or navigate directly to cart
-  cy.contains("Go to Cart").click();
-  
+  cy.getByDataCy("go-to-cart-button").click();
+
   // Verify we're on the cart page
-  cy.contains("Cart").should("be.visible");
+  cy.getByDataCy("cart-title").should("be.visible").and("contain", "Cart");
 });
 
 // Scenario: Display added products in the cart
 Then("the cart should contain at least one product", () => {
-  cy.get(".cartRow").should("have.length.at.least", 1);
+  cy.getByDataCy("cart-row").should("have.length.at.least", 1);
 });
 
 Then("product details should be displayed correctly", () => {
-  cy.get(".cartImg").should("be.visible");
-  cy.get(".cartTitle").should("be.visible");
-  cy.get(".cartPriceQty").should("contain", "Price:");
-  cy.get(".cartPriceQty").should("contain", "Quantity:");
+  cy.getByDataCy("cart-image").should("be.visible");
+  cy.getByDataCy("cart-title").should("be.visible");
+  cy.getByDataCy("cart-price-qty").should("contain", "Price:");
+  cy.getByDataCy("cart-price-qty").should("contain", "Quantity:");
 });
 
 // Scenario: Increase product quantity
 When("I click the plus button to increase quantity", () => {
   // Store the initial quantity in an alias
-  cy.get(".cartPriceQty")
+  cy.getByDataCy("cart-price-qty")
     .contains("Quantity:")
     .invoke("text")
     .then((text) => {
@@ -56,12 +58,12 @@ When("I click the plus button to increase quantity", () => {
     });
 
   // Click the plus button to increase quantity
-  cy.get(".countBtns").find(".btn").find(".fa-plus").parent().click();
+  cy.getByDataCy("increase-quantity-button").click();
 });
 
 Then("the product quantity should increase by 1", () => {
   cy.get("@initialQuantity").then((initialQuantity) => {
-    cy.get(".cartPriceQty")
+    cy.getByDataCy("cart-price-qty")
       .contains("Quantity:")
       .invoke("text")
       .should((newText) => {
@@ -73,10 +75,10 @@ Then("the product quantity should increase by 1", () => {
 
 // Scenario: Decrease product quantity
 Given("I have increased the product quantity", () => {
-  cy.get(".countBtns").find(".btn").find(".fa-plus").parent().click();
+  cy.getByDataCy("increase-quantity-button").click();
 
   // Store the starting quantity in an alias
-  cy.get(".cartPriceQty")
+  cy.getByDataCy("cart-price-qty")
     .contains("Quantity:")
     .invoke("text")
     .then((text) => {
@@ -86,12 +88,12 @@ Given("I have increased the product quantity", () => {
 });
 
 When("I click the minus button to decrease quantity", () => {
-  cy.get(".countBtns").find(".btn").find(".fa-minus").parent().click();
+  cy.getByDataCy("decrease-quantity-button").click();
 });
 
 Then("the product quantity should decrease by 1", () => {
   cy.get("@startingQuantity").then((startingQuantity) => {
-    cy.get(".cartPriceQty")
+    cy.getByDataCy("cart-price-qty")
       .contains("Quantity:")
       .invoke("text")
       .should((newText) => {
@@ -104,7 +106,7 @@ Then("the product quantity should decrease by 1", () => {
 // Scenario: Remove a product from cart
 When("I click the trash button to remove the product", () => {
   // Get initial number of items in cart
-  cy.get(".items")
+  cy.getByDataCy("cart-items")
     .invoke("text")
     .then((text) => {
       const initialItems = parseInt(text.replace("Items: ", ""));
@@ -112,7 +114,7 @@ When("I click the trash button to remove the product", () => {
     });
 
   // Click the trash button to remove the product
-  cy.get(".countBtns").find(".btn").find(".fa-trash").parent().click();
+  cy.getByDataCy("remove-product-button").click();
 });
 
 Then("the product should be removed from the cart", () => {
@@ -124,7 +126,7 @@ Then("the product should be removed from the cart", () => {
       );
     } else {
       // Otherwise verify item count decreased
-      cy.get(".items")
+      cy.getByDataCy("cart-items")
         .invoke("text")
         .should((newText) => {
           const newItems = parseInt(newText.replace("Items: ", ""));
@@ -142,7 +144,7 @@ Then(
     let price;
     let quantity;
 
-    cy.get(".cartPriceQty")
+    cy.getByDataCy("cart-price-qty")
       .within(() => {
         cy.contains("Price:")
           .invoke("text")
@@ -158,7 +160,7 @@ Then(
       })
       .then(() => {
         // Verify the total matches price * quantity
-        cy.get(".total")
+        cy.getByDataCy("cart-total")
           .invoke("text")
           .then((text) => {
             const totalText = text.trim();
@@ -173,10 +175,10 @@ Then(
 
 // Scenario: Clear the entire cart
 When("I click the clear cart button", () => {
-  cy.contains(".btn", "Clear Cart").click();
+  cy.getByDataCy("clear-cart-button").click();
 });
 
 Then("the cart should be empty", () => {
   cy.contains("Check out the shop and find your style!").should("be.visible");
-  cy.get(".cartRow").should("not.exist");
+  cy.getByDataCy("cart-row").should("not.exist");
 });

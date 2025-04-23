@@ -66,30 +66,35 @@ function Products() {
         <div className="category buttons d-flex justify-content-center mb-5 pb-5">
           <button
             className="btn btn-outline-dark me-2"
+            data-cy="filter-all"
             onClick={() => setFilter(data)}
           >
             All
           </button>
           <button
             className="btn btn-outline-dark me-2"
+            data-cy="filter-mens"
             onClick={() => filterProduct("men's clothing")}
           >
             Men's Clothing
           </button>
           <button
             className="btn btn-outline-dark me-2"
+            data-cy="filter-womens"
             onClick={() => filterProduct("women's clothing")}
           >
             Women's Clothing
           </button>
           <button
             className="btn btn-outline-dark me-2"
+            data-cy="filter-jewelry"
             onClick={() => filterProduct("jewelry")}
           >
             Jewelry
           </button>
           <button
             className="btn btn-outline-dark me-2"
+            data-cy="filter-electronics"
             onClick={() => filterProduct("electronics")}
           >
             Electronics
@@ -97,7 +102,7 @@ function Products() {
         </div>
         {filter.map((product, idx) => (
           <div className="col-md-4 col-lg-3 mb-4" key={idx}>
-            <div className="card h-100 text-center p-5" key={product.id}>
+            <div className="card h-100 text-center p-5" data-cy="product-card" key={product.id}>
               <img
                 src={product.image}
                 className="allProducts card-img-top"
@@ -105,13 +110,14 @@ function Products() {
                 height="250px"
               />
               <div className="card-body">
-                <h5 className="card-title mb-0">
+                <h5 className="card-title mb-0" data-cy="product-card-title">
                   {product.title.substring(0, 12)}
                 </h5>
                 <p className="card-text lead fw-bold">${product.price}</p>
                 <NavLink
                   to={`/products/${product.id}`}
                   className="btn btn-outline-dark"
+                  data-cy="buy-now-button"
                 >
                   Buy Now
                 </NavLink>
@@ -128,7 +134,7 @@ function Products() {
       <div className="container my-5 py-5">
         <div className="row">
           <div className="col-12 mb-5">
-            <h1 className="display-6 fw-bolder text-center">Latest Products</h1>
+            <h1 className="display-6 fw-bolder text-center" data-cy="page-title">Latest Products</h1>
             <hr />
           </div>
         </div>

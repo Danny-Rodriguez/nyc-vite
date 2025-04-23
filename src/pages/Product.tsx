@@ -80,7 +80,7 @@ function Product({ addToCart }: ProductProps) {
         </div>
         <div className="col-md-6 ">
           <h4 className="text-uppercase text-black-50">{product.category}</h4>
-          <h1 className="display-5">{product.title}</h1>
+          <h1 className="display-5" data-cy="product-title">{product.title}</h1>
           <p className="lead fw-bolder">
             Rating {product.rating && product.rating.rate}
             &nbsp;<i className="fa fa-star" style={{ color: "#facc15" }}></i>
@@ -89,11 +89,12 @@ function Product({ addToCart }: ProductProps) {
           <p className="lead">{product.description}</p>
           <button
             className="btn btn-outline-dark px-4 py-2"
+            data-cy="add-to-cart-button"
             onClick={() => addToCart(product)}
           >
             Add to Cart
           </button>
-          <NavLink to="/cart" className="btn btn-dark ms-2 px-3 py-2">
+          <NavLink to="/cart" className="btn btn-dark ms-2 px-3 py-2" data-cy="go-to-cart-button">
             Go to Cart
           </NavLink>
         </div>
