@@ -72,6 +72,7 @@ function Product({ addToCart }: ProductProps) {
         <div className="col-md-6 productArea">
           <img
             className="productImg"
+            data-cy="product-image"
             src={product.image}
             alt={product.title}
             height="400px"
@@ -79,14 +80,14 @@ function Product({ addToCart }: ProductProps) {
           />
         </div>
         <div className="col-md-6 ">
-          <h4 className="text-uppercase text-black-50">{product.category}</h4>
+          <h4 className="text-uppercase text-black-50" data-cy="product-category">{product.category}</h4>
           <h1 className="display-5" data-cy="product-title">{product.title}</h1>
-          <p className="lead fw-bolder">
+          <p className="lead fw-bolder" data-cy="product-rating">
             Rating {product.rating && product.rating.rate}
-            &nbsp;<i className="fa fa-star" style={{ color: "#facc15" }}></i>
+            &nbsp;<i className="fa fa-star" data-cy="rating-star" style={{ color: "#facc15" }}></i>
           </p>
-          <h3 className="display-6 fw-bold my-4">${product.price}</h3>
-          <p className="lead">{product.description}</p>
+          <h3 className="display-6 fw-bold my-4" data-cy="product-price">${product.price}</h3>
+          <p className="lead" data-cy="product-description">{product.description}</p>
           <button
             className="btn btn-outline-dark px-4 py-2"
             data-cy="add-to-cart-button"

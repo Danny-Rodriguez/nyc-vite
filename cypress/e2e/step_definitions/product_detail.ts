@@ -8,36 +8,35 @@ Given(
     cy.visit(`/products/${productId}`);
 
     // Wait for product to load
-    cy.contains("Add to Cart").should("be.visible");
+    cy.getByDataCy("add-to-cart-button").should("be.visible");
   }
 );
 
 // Scenario: Display product details correctly
 Then("the product title should be visible", () => {
-  cy.get(".display-5").should("exist");
+  cy.getByDataCy("product-title").should("exist");
 });
 
 Then("the product price should be visible", () => {
-  cy.get(".display-6").should("exist");
+  cy.getByDataCy("product-price").should("exist");
 });
 
 Then("the product description should be visible", () => {
-  cy.get(".lead").should("exist");
+  cy.getByDataCy("product-description").should("exist");
 });
 
 Then("the product image should be visible", () => {
-  cy.get(".productImg").should("be.visible");
+  cy.getByDataCy("product-image").should("be.visible");
 });
 
 Then("the product rating should be visible", () => {
-  cy.get(".fa-star").should("be.visible");
+  cy.getByDataCy("rating-star").should("be.visible");
 });
 
 // Scenario: Add product to cart
 When("I click the Add to Cart button", () => {
   // Get initial cart count from navbar and store it
-  cy.get(".navbar")
-    .contains(/cart/i)
+  cy.getByDataCy("nav-link-cart")
     .then(($cart) => {
       const matches = $cart.text().match(/\d+/);
       const initialCount = parseInt(matches ? matches[0] : "0");
@@ -45,14 +44,13 @@ When("I click the Add to Cart button", () => {
     });
 
   // Click Add to Cart button
-  cy.contains("Add to Cart").click();
+  cy.getByDataCy("add-to-cart-button").click();
 });
 
 Then("the cart count should increase by 1", () => {
   cy.get("@initialCartCount").then((initialCount) => {
     // Verify cart count increased
-    cy.get(".navbar")
-      .contains(/cart/i)
+    cy.getByDataCy("nav-link-cart")
       .should(($cartAfter) => {
         const matches = $cartAfter.text().match(/\d+/);
         const newCount = parseInt(matches ? matches[0] : "0");
@@ -63,7 +61,7 @@ Then("the cart count should increase by 1", () => {
 
 // Scenario: Navigate to cart page
 When("I click the Go to Cart button", () => {
-  cy.contains("Go to Cart").click();
+  cy.getByDataCy("go-to-cart-button").click();
 });
 
 Then("I should be redirected to the cart page", () => {
@@ -76,7 +74,7 @@ Then("the reviews section should be visible", () => {
 });
 
 Then("the star ratings should be visible", () => {
-  cy.get(".fa-star").should("be.visible");
+  cy.getByDataCy("rating-star").should("be.visible");
 });
 
 // Scenario: Handle non-existent product
