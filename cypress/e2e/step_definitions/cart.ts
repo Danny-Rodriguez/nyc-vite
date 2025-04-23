@@ -1,4 +1,5 @@
 import { Given, When, Then } from "@badeball/cypress-cucumber-preprocessor";
+import { getQuantityValue, getPriceValue, getTotalValue, getItemsCount } from "../../support/helpers";
 
 // Background steps
 Given("I am on the products page for cart testing", () => {
@@ -46,45 +47,31 @@ Then("product details should be displayed correctly", () => {
   cy.getByDataCy("cart-price-qty").should("contain", "Quantity:");
 });
 
+// Helper functions are now imported from ../../support/helpers
+
 // Scenario: Increase product quantity
 When("I click the plus button to increase quantity", () => {
-  // Store the initial quantity in an alias
-  cy.getByDataCy("cart-price-qty")
-    .contains("Quantity:")
-    .invoke("text")
-    .then((text) => {
-      const initialQuantity = parseInt(text.replace("Quantity: ", ""));
-      cy.wrap(initialQuantity).as("initialQuantity");
-    });
-
-  // Click the plus button to increase quantity
+  // Store the initial quantity and click the plus button
+  getQuantityValue("initialQuantity");
   cy.getByDataCy("increase-quantity-button").click();
 });
 
 Then("the product quantity should increase by 1", () => {
-  cy.get("@initialQuantity").then((initialQuantity) => {
-    cy.getByDataCy("cart-price-qty")
-      .contains("Quantity:")
-      .invoke("text")
-      .should((newText) => {
-        const newQuantity = parseInt(newText.replace("Quantity: ", ""));
-        expect(newQuantity).to.equal(Number(initialQuantity) + 1);
-      });
+  cy.get("@initialQuantity").then(initialQuantity => {
+    // Get the new quantity after clicking the plus button
+    getQuantityValue("newQuantity");
+    cy.get("@newQuantity").then(newQuantity => {
+      expect(newQuantity).to.equal(Number(initialQuantity) + 1);
+    });
   });
 });
 
 // Scenario: Decrease product quantity
 Given("I have increased the product quantity", () => {
   cy.getByDataCy("increase-quantity-button").click();
-
+  
   // Store the starting quantity in an alias
-  cy.getByDataCy("cart-price-qty")
-    .contains("Quantity:")
-    .invoke("text")
-    .then((text) => {
-      const startingQuantity = parseInt(text.replace("Quantity: ", ""));
-      cy.wrap(startingQuantity).as("startingQuantity");
-    });
+  getQuantityValue("startingQuantity");
 });
 
 When("I click the minus button to decrease quantity", () => {
@@ -92,26 +79,19 @@ When("I click the minus button to decrease quantity", () => {
 });
 
 Then("the product quantity should decrease by 1", () => {
-  cy.get("@startingQuantity").then((startingQuantity) => {
-    cy.getByDataCy("cart-price-qty")
-      .contains("Quantity:")
-      .invoke("text")
-      .should((newText) => {
-        const newQuantity = parseInt(newText.replace("Quantity: ", ""));
-        expect(newQuantity).to.equal(Number(startingQuantity) - 1);
-      });
+  cy.get("@startingQuantity").then(startingQuantity => {
+    // Get the new quantity after clicking the minus button
+    getQuantityValue("newQuantity");
+    cy.get("@newQuantity").then(newQuantity => {
+      expect(newQuantity).to.equal(Number(startingQuantity) - 1);
+    });
   });
 });
 
 // Scenario: Remove a product from cart
 When("I click the trash button to remove the product", () => {
   // Get initial number of items in cart
-  cy.getByDataCy("cart-items")
-    .invoke("text")
-    .then((text) => {
-      const initialItems = parseInt(text.replace("Items: ", ""));
-      cy.wrap(initialItems).as("initialItems");
-    });
+  getItemsCount("initialItems");
 
   // Click the trash button to remove the product
   cy.getByDataCy("remove-product-button").click();
@@ -128,8 +108,13 @@ Then("the product should be removed from the cart", () => {
       // Otherwise verify item count decreased
       cy.getByDataCy("cart-items")
         .invoke("text")
-        .should((newText) => {
-          const newItems = parseInt(newText.replace("Items: ", ""));
+        .then((newText) => {
+          cy.log(`Items text: ${newText}`);
+          // Extract just the number part
+          const itemsMatch = newText.match(/(\d+)/);
+          const newItems = itemsMatch ? parseInt(itemsMatch[0]) : 0;
+          cy.log(`New items count: ${newItems}`);
+          cy.log(`Initial items count: ${Number(initialItems)}`);
           expect(newItems).to.equal(Number(initialItems) - 1);
         });
     }
@@ -139,37 +124,26 @@ Then("the product should be removed from the cart", () => {
 // Scenario: Calculate correct total price
 Then(
   "the total price should match the product price multiplied by quantity",
-  () => {
-    // Get price and quantity of the product
-    let price;
-    let quantity;
+  function () {
+    // Get price, quantity, and total values using our helper functions
+    getPriceValue();
+    getQuantityValue();
+    getTotalValue();
 
-    cy.getByDataCy("cart-price-qty")
-      .within(() => {
-        cy.contains("Price:")
-          .invoke("text")
-          .then((text) => {
-            price = parseFloat(text.replace("Price: ", ""));
-          });
-
-        cy.contains("Quantity:")
-          .invoke("text")
-          .then((text) => {
-            quantity = parseInt(text.replace("Quantity: ", ""));
-          });
-      })
-      .then(() => {
-        // Verify the total matches price * quantity
-        cy.getByDataCy("cart-total")
-          .invoke("text")
-          .then((text) => {
-            const totalText = text.trim();
-            const total = parseFloat(totalText.replace("Total: $", ""));
-
-            // Use approximately equal due to potential floating point issues
-            expect(total).to.be.closeTo(price * quantity, 0.01);
-          });
+    // Now use the aliases to perform the calculation and assertion
+    cy.get('@price').then(price => {
+      cy.get('@quantity').then(quantity => {
+        cy.get('@total').then(total => {
+          cy.log(`Price: ${price}`);
+          cy.log(`Quantity: ${quantity}`);
+          cy.log(`Total: ${total}`);
+          cy.log(`Expected: ${Number(price) * Number(quantity)}`);
+          
+          // Use approximately equal due to potential floating point issues
+          expect(Number(total)).to.be.closeTo(Number(price) * Number(quantity), 0.01);
+        });
       });
+    });
   }
 );
 
