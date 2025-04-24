@@ -14,9 +14,18 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands'
+import "./commands";
 
-import { mount } from 'cypress/react'
+// Import Bootstrap and Font Awesome styles for component tests
+import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import "../../node_modules/bootstrap/dist/js/bootstrap.min.js";
+import "../../node_modules/font-awesome/css/font-awesome.min.css";
+
+// Import any global styles
+import "../../src/index.css";
+import "../../src/App.css";
+
+import { mount } from "cypress/react";
 
 // Augment the Cypress namespace to include type definitions for
 // your custom command.
@@ -25,12 +34,12 @@ import { mount } from 'cypress/react'
 declare global {
   namespace Cypress {
     interface Chainable {
-      mount: typeof mount
+      mount: typeof mount;
     }
   }
 }
 
-Cypress.Commands.add('mount', mount)
+Cypress.Commands.add("mount", mount);
 
 // Example use:
 // cy.mount(<MyComponent />)

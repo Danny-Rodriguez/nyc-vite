@@ -13,7 +13,7 @@ describe("<Cart />", () => {
       removeFromCart: (_product: Product) => {},
       clearCart: () => {},
       removeOneFromCart: (_product: Product) => {},
-      getCartTotal: () => 0,
+      getCartTotal: () => 2,
     };
 
     // Mount the component with all required props
