@@ -55,6 +55,7 @@ cypress/
 - **Use Scenario Outline for data-driven tests**: Test multiple variations with Examples tables
 
 Example:
+
 ```gherkin
 Feature: Shopping Cart Functionality
   As a customer
@@ -88,6 +89,7 @@ Feature: Shopping Cart Functionality
 - **Share common steps**: Use a common.ts file for steps used across multiple features
 
 Example:
+
 ```typescript
 // In common.ts - reusable steps
 Given("I am on the products page", () => {
@@ -137,6 +139,7 @@ For this project, we've found that using Edge browser instead of the default Ele
 - **Create custom commands**: Encapsulate common test operations in custom commands
 
 Example:
+
 ```typescript
 // In commands.ts
 Cypress.Commands.add("getByDataCy", (selector) => {
@@ -161,3 +164,56 @@ cy.getByDataCy("product-card").should("have.length.at.least", 1);
 - [Cucumber Documentation](https://cucumber.io/docs/cucumber/)
 - [@badeball/cypress-cucumber-preprocessor](https://github.com/badeball/cypress-cucumber-preprocessor)
 
+## Component Testing
+
+### 1. Project Structure
+
+We follow a well-organized structure for our component testing:
+
+```
+cypress/
+  support/
+    component.ts          # Component testing setup
+  component/
+    Cart.cy.tsx         # Cart component test
+    Footer.cy.tsx       # Footer component test
+```
+
+### 2. Component Testing Best Practices
+
+- **Isolate components**: Test components in isolation from the application
+- **Use custom commands**: Leverage Cypress commands to mount components
+- **Test component behavior**: Focus on component behavior rather than implementation
+- **Use meaningful assertions**: Assertions should clearly indicate what's being tested
+- **Leverage Cypress's retry-ability**: Use assertions that automatically retry until they pass or timeout
+
+Example:
+
+```typescript
+// In commands.ts
+Cypress.Commands.add("mount", mount);
+
+// In Cart.cy.tsx
+it("renders", () => {
+  cy.mount(<Cart />);
+  cy.getByDataCy("cart-count").should("have.text", "0");
+});
+```
+
+### 3. Custom Commands
+
+- **Use data-cy attributes**: Always use dedicated test attributes instead of CSS classes or IDs
+- **Create custom commands**: Encapsulate common test operations in custom commands
+
+Example:
+
+```typescript
+// In commands.ts
+Cypress.Commands.add("getByDataCy", (selector) => {
+  return cy.get(`[data-cy=${selector}]`);
+});
+
+// In tests
+// see: https://on.cypress.io/mounting-react
+cy.getByDataCy("product-card").should("have.length.at.least", 1);
+```

@@ -25,4 +25,11 @@ export default defineConfig({
     },
     experimentalStudio: false,
   },
+
+  component: {
+    devServer: {
+      framework: "react",
+      bundler: "vite",
+    },
+  },
 });
