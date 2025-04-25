@@ -31,10 +31,11 @@ function Navbar({ getCartTotal }: NavbarProps) {
             aria-controls="navbarSupportedContent"
             aria-expanded="false"
             aria-label="Toggle navigation"
+            data-cy="navbar-toggler"
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <div className="collapse navbar-collapse" id="navbarSupportedContent" data-cy="navbar-content">
             <ul className="navbar-nav mx-auto mb-2 mb-lg-0" data-cy="navbar-links">
               <li className="nav-item">
                 <NavLink className="nav-link" to="/" data-cy="nav-link-home">

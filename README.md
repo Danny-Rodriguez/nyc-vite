@@ -200,20 +200,50 @@ it("renders", () => {
 });
 ```
 
-### 3. Custom Commands
+### 3. Incorporating Styles in Component Tests
 
-- **Use data-cy attributes**: Always use dedicated test attributes instead of CSS classes or IDs
-- **Create custom commands**: Encapsulate common test operations in custom commands
+- **Import application styles**: All of your application's styles need to be imported in Cypress for components to render correctly
+- **Configure styles using Cypress hooks**: Cypress provides two hooks for configuring styles:
 
-Example:
+  1. An HTML file: `cypress/support/component-index.html`
+  2. A JavaScript support file: `cypress/support/component.ts`
+
+- **Mimic your application's setup**: When creating a test environment, always mirror your application's setup:
+
+  - If your app uses `<link>` tags in the `<head>` for fonts or stylesheets, ensure the same tags are in `component-index.html`
+  - For styles loaded in your application's `main.ts/js` file, import them in `cypress/support/component.ts`
+
+- **Create a shared setup file**: Consider creating a `src/setup.ts` file that can be reused in both your main application entrypoint and test setup
+
+**Example project structure:**
+
+```
+/cypress
+  /support
+    /component.ts
+/src
+  /main.ts
+  /main.css
+  /setup.ts
+```
+
+**Example implementation:**
+
+In `cypress/support/component.ts`:
 
 ```typescript
-// In commands.ts
-Cypress.Commands.add("getByDataCy", (selector) => {
-  return cy.get(`[data-cy=${selector}]`);
-});
+// Import application styles
+import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import "../../node_modules/font-awesome/css/font-awesome.min.css";
+import "../../src/index.css";
 
-// In tests
-// see: https://on.cypress.io/mounting-react
-cy.getByDataCy("product-card").should("have.length.at.least", 1);
+// Import mount function
+import { mount } from "cypress/react";
+
+// Register mount command
+Cypress.Commands.add("mount", mount);
 ```
+
+### 4. Troubleshooting
+
+- You may need to restart Cypress when switching from E2E to Component Testing or vice-versa.
