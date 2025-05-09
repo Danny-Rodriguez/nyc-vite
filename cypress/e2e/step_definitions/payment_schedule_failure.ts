@@ -1,4 +1,4 @@
-import { When, Then } from "@badeball/cypress-cucumber-preprocessor";
+import { When } from "@badeball/cypress-cucumber-preprocessor";
 import { FailureScenarios } from "../../support/network-failures";
 
 // Specific step for PostSchedulePayment with 422 Invalid Payment Method error
@@ -26,10 +26,4 @@ When("I attempt to schedule a payment with an invalid payment method", () => {
   cy.wait("@invalidPaymentMethod");
 });
 
-// This step is already defined in payment_failures.ts, but we include it here for completeness
-Then("I should see an error message about invalid payment method", () => {
-  // Check for alert message
-  cy.on("window:alert", (text) => {
-    expect(text).to.include("There was an error processing your checkout");
-  });
-});
+// Note: Error message assertion is now in common.ts

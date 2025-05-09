@@ -1,4 +1,4 @@
-import { When, Then } from "@badeball/cypress-cucumber-preprocessor";
+import { When } from "@badeball/cypress-cucumber-preprocessor";
 import { mockNetworkFailure, FailureScenarios } from "../../support/network-failures";
 
 // Common steps are now in common_steps.ts
@@ -52,24 +52,4 @@ When("I attempt to checkout and there is a network connection error", () => {
   cy.wait("@networkConnectionError");
 });
 
-// Assertions for error messages
-Then("I should see an error message about invalid payment method", () => {
-  // Check for alert message
-  cy.on("window:alert", (text) => {
-    expect(text).to.include("There was an error processing your checkout");
-  });
-});
-
-Then("I should see an error message about payment server error", () => {
-  // Check for alert message
-  cy.on("window:alert", (text) => {
-    expect(text).to.include("There was an error processing your checkout");
-  });
-});
-
-Then("I should see an error message about network connection error", () => {
-  // Check for alert message
-  cy.on("window:alert", (text) => {
-    expect(text).to.include("There was an error processing your checkout");
-  });
-});
+// Note: Error message assertions are now in common.ts
